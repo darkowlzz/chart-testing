@@ -58,6 +58,7 @@ type Configuration struct {
 	Debug                 bool     `mapstructure:"debug"`
 	Namespace             string   `mapstructure:"namespace"`
 	ReleaseLabel          string   `mapstructure:"release-label"`
+	RunSingleValues       bool     `mapstructure:"run-single-values"`
 }
 
 func LoadConfiguration(cfgFile string, cmd *cobra.Command, bindFlagsFunc ...func(flagSet *flag.FlagSet, viper *viper.Viper) error) (*Configuration, error) {

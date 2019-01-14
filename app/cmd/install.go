@@ -69,6 +69,9 @@ func addInstallFlags(flags *flag.FlagSet) {
 	flags.String("release-label", "app.kubernetes.io/instance", heredoc.Doc(`
 		The label to be used as a selector when inspecting resources created by charts.
 		This is only used if namespace is specified.`))
+	flags.Bool("run-single-values", false, heredoc.Doc(`
+		Run single values file at once. This will delete a release before installing
+		another values file.`))
 }
 
 func install(cmd *cobra.Command, args []string) {

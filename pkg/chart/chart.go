@@ -354,8 +354,11 @@ func (t *Testing) InstallChart(chart string, valuesFiles []string) TestResult {
 			defer t.kubectl.DeleteNamespace(namespace)
 		}
 
-		defer t.helm.DeleteRelease(release)
-		defer t.PrintPodDetailsAndLogs(namespace, releaseSelector)
+		// Defer deletion if it is not a single value run.
+		if !t.config.RunSingleValues {
+			defer t.helm.DeleteRelease(release)
+			defer t.PrintPodDetailsAndLogs(namespace, releaseSelector)
+		}
 
 		if err := t.helm.InstallWithValues(chart, valuesFile, namespace, release); err != nil {
 			result.Error = err
@@ -368,6 +371,12 @@ func (t *Testing) InstallChart(chart string, valuesFiles []string) TestResult {
 		if err := t.helm.Test(release); err != nil {
 			result.Error = err
 			break
+		}
+
+		// Delete immediately if it's a single value run.
+		if t.config.RunSingleValues {
+			t.helm.DeleteRelease(release)
+			t.PrintPodDetailsAndLogs(namespace, releaseSelector)
 		}
 	}
 
